@@ -17,10 +17,10 @@ module Classwork_test3 where
 -- ------------------------------------------------------------
 
 divisors :: Int -> [Int]
-divisors n = []
+divisors n = [ x | x <- [1..n], n `mod` x == 0 ]
 
 divisors' :: Int -> [Int]
-divisors' n = []
+divisors' n = filter (\x -> n `mod` x == 0) [ x | x <- [1..n] ]
 
 
 -- ------------------------------------------------------------
@@ -30,10 +30,20 @@ divisors' n = []
 -- ------------------------------------------------------------
 
 letterGrade :: Int -> Char
-letterGrade s = '?'
+letterGrade s =
+    if s >= 90 then 'A'
+    else if s >= 80 then 'B'
+    else if s >= 70 then 'C'
+    else if s >= 60 then 'D'
+    else 'F'
 
 letterGrade' :: Int -> Char
-letterGrade' s = '?'
+letterGrade' s
+    | s >= 90    = 'A'
+    | s >= 80    = 'B'
+    | s >= 70    = 'C'
+    | s >= 60    = 'D'
+    | otherwise  = 'F'
 
 
 -- ------------------------------------------------------------
@@ -43,10 +53,10 @@ letterGrade' s = '?'
 -- ------------------------------------------------------------
 
 third :: [a] -> a
-third xs = head xs
+third xs = head (tail (tail xs))
 
 third' :: [a] -> a
-third' xs = head xs
+third' (_:_:x:_) = x
 
 
 -- ============================================================
@@ -60,10 +70,15 @@ third' xs = head xs
 -- ------------------------------------------------------------
 
 squareEvens :: [Int] -> [Int]
-squareEvens xs = []
+squareEvens xs = squareAll es
+    where
+        es = filter even xs
+
+squareAll [] = []
+squareAll (n:ns) = [n*n] ++ squareAll ns
 
 squareEvens' :: [Int] -> [Int]
-squareEvens' xs = []
+squareEvens' xs = map (^2) (filter even xs)
 
 
 -- ------------------------------------------------------------
@@ -74,10 +89,11 @@ squareEvens' xs = []
 -- ------------------------------------------------------------
 
 product' :: [Int] -> Int
-product' xs = -1
+product' = foldr (*) 1
 
 product'' :: [Int] -> Int
-product'' xs = -1
+product'' [] = 1
+product'' (x:xs) = x * product'' xs
 
 
 -- ------------------------------------------------------------
@@ -87,7 +103,7 @@ product'' xs = -1
 -- ------------------------------------------------------------
 
 count :: Eq a => a -> [a] -> Int
-count x xs = -1
+count x xs = length (filter (x==) xs)
 
 count' :: Eq a => a -> [a] -> Int
-count' x xs = -1
+count' x xs = sum (map (\y -> if x==y then 1 else 0) xs)
